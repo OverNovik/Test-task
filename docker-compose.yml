@@ -1,0 +1,62 @@
+version: '3.9'
+
+services:
+  nestjs:
+    container_name: nestjs_dev
+    image: nestjs-api-dev:1.0.0
+    env_file:
+      - .env-dev
+    environment:
+      - DB_HOST=postgres
+    build:
+      context: .
+      args:
+        - NPM_TOKEN
+      target: development
+      dockerfile: ./Dockerfile
+    depends_on:
+      - postgres
+    command: npm run start:debug
+    ports:
+      - 3000:3000
+    networks:
+      - nesjs-network
+    restart: unless-stopped
+  prod:
+    container_name: nestjs_api_prod
+    image: nestjs-api-prod:1.0.0
+    build:
+      context: .
+      target: production
+      dockerfile: ./Dockerfile
+    command: npm run start:prod
+    ports:
+      - 3000:3000
+    networks:
+      - nesjs-network
+    restart: unless-stopped
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: scrl
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    networks:
+      - nesjs-network
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:6.21
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: postgres
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "9090:80"
+    networks:
+      - nesjs-network
+
+networks:
+  nesjs-network:
