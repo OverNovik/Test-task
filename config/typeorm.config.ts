@@ -1,9 +1,8 @@
+import { AppModule } from '../src/app.module';
 import { NestFactory } from '@nestjs/core';
 import { TYPEORM_MODULE_OPTIONS } from '@nestjs/typeorm/dist/typeorm.constants';
 import * as path from 'path';
 import { DataSource } from 'typeorm';
-
-import { AppModule } from '../src/app.module';
 
 export const setup = async () => {
   const app = await NestFactory.create(AppModule);
@@ -12,7 +11,7 @@ export const setup = async () => {
 
   return new DataSource({
     ...typeOrmModuleOptions,
-    entities: [path.join(__dirname, '../src/resources/**/*.entity{.ts,.js}')],
+    entities: [path.join(__dirname, '../src/**/*.entity{.ts,.js}')],
     migrations: [path.join(__dirname, '../migrations/*.{ts,js}')],
   });
 };

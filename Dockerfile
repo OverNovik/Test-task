@@ -2,10 +2,10 @@
 FROM node:18-alpine as development
 
 # Optional NPM automation (auth) token build argument
-ARG NPM_TOKEN
+# ARG NPM_TOKEN
 
 # Optionally authenticate NPM registry
-RUN npm set //npm.pkg.github.com/:_authToken ${NPM_TOKEN}
+# RUN npm set //npm.pkg.github.com/:_authToken ${NPM_TOKEN}
 
 WORKDIR /app
 
@@ -16,16 +16,14 @@ COPY nest-cli.json ./
 #COPY .npmrc ./
 
 # Install dependencies from package-lock.json, see https://docs.npmjs.com/cli/v7/commands/npm-ci
-RUN npm ci
+# RUN npm ci
+RUN npm i
+
 
 # Copy application sources (.ts, .tsx, js)
 COPY src/ src/
 COPY config/ config/
 COPY migrations/ migrations/
-COPY public/ public/
-
-# Run tests
-RUN npm run test
 
 # Build application (produces dist/ folder)
 RUN npm run build
@@ -34,10 +32,10 @@ RUN npm run build
 FROM node:18-alpine as production
 
 # Optional NPM automation (auth) token build argument
-ARG NPM_TOKEN
+# ARG NPM_TOKEN
 
 # Optionally authenticate NPM registry
-RUN npm set //npm.pkg.github.com/:_authToken ${NPM_TOKEN}
+# RUN npm set //npm.pkg.github.com/:_authToken ${NPM_TOKEN}
 
 WORKDIR /app
 
